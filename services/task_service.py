@@ -9,9 +9,15 @@ from repositories.user_repository import UserRepository
 
 
 class TaskService:
-    def __init__(self, repo: TaskRepository, project_service: ProjectService):
+    def __init__(
+        self,
+        repo: TaskRepository,
+        project_service: ProjectService,
+        user_repo: UserRepository,
+    ):
         self.repo = repo
         self.project_service = project_service
+        self.user_repo = user_repo
 
     def create_task(self, db, data, user_id: int):
         project = self.project_service.repo.get_by_id(db, data.project_id)
@@ -19,8 +25,7 @@ class TaskService:
             raise HTTPException(status_code=404, detail="Project not found")
 
         if data.assigned_to is not None:
-            user_repo = UserRepository()
-            if not user_repo.get_by_id(db, data.assigned_to):
+            if not self.user_repo.get_by_id(db, data.assigned_to):
                 raise HTTPException(status_code=404, detail="Assigned user not found")
 
         task = TaskDB(
@@ -77,8 +82,7 @@ class TaskService:
             )
 
         if data.assigned_to is not None:
-            user_repo = UserRepository()
-            if not user_repo.get_by_id(db, data.assigned_to):
+            if not self.user_repo.get_by_id(db, data.assigned_to):
                 raise HTTPException(status_code=404, detail="Assigned user not found")
 
         if data.title is not None:

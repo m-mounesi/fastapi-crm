@@ -62,8 +62,13 @@ def get_project_repository():
 def get_project_service(
     repo: ProjectRepository = Depends(get_project_repository),
     user_repo: UserRepository = Depends(get_user_repository),
+    customer_repo: CustomerRepository = Depends(get_customer_repository),
 ):
-    return ProjectService(repo, user_repo)
+    return ProjectService(
+        repo=repo,
+        user_repo=user_repo,
+        customer_repo=customer_repo,
+    )
 
 
 # TASK
@@ -76,8 +81,9 @@ def get_task_repository():
 def get_task_service(
     repo: TaskRepository = Depends(get_task_repository),
     project_service: ProjectService = Depends(get_project_service),
+    user_repo: UserRepository = Depends(get_user_repository),
 ):
-    return TaskService(repo, project_service)
+    return TaskService(repo, project_service, user_repo)
 
 
 # NOTE

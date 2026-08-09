@@ -9,9 +9,15 @@ from repositories.customer_repository import CustomerRepository
 
 
 class ProjectService:
-    def __init__(self, repo: ProjectRepository, user_repo: UserRepository):
+    def __init__(
+        self,
+        repo: ProjectRepository,
+        user_repo: UserRepository,
+        customer_repo: CustomerRepository,
+    ):
         self.repo = repo
         self.user_repo = user_repo
+        self.customer_rep = customer_repo
 
     def create_project(self, db, data, user_id: int):
         customer_repo = CustomerRepository()
