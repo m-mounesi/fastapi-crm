@@ -74,7 +74,9 @@ def delete_project(
     if not result:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    return {"message": "Project deleted successfully"}
+    return SuccessResponse(
+        message="Project deleted successfully", data=f"Deleted Project : {project_id} "
+    )
 
 
 # Restore

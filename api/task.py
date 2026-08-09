@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from core.database import get_db
@@ -26,7 +26,7 @@ def create_task(
 # GET ALL
 @router.get("/", response_model=list[TaskResponse])
 def get_tasks(
-    project_id: int,
+    project_id: int | None = Query(default=None),
     db: Session = Depends(get_db),
     service: TaskService = Depends(get_task_service),
     user: UserDB = Depends(require_permission("task.read")),
@@ -91,7 +91,9 @@ def delete_task(
     if not result:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    return {"message": "Task deleted successfully"}
+    return SuccessResponse(
+        message="Task deleted successfully", data=f"Deleted Task : {task_id} "
+    )
 
 
 # Restore

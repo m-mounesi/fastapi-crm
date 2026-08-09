@@ -82,7 +82,10 @@ def delete_customer(
     if not result:
         raise HTTPException(status_code=404, detail="Customer not found")
 
-    return {"message": "Customer deleted successfully"}
+    return SuccessResponse(
+        message="Customer deleted successfully",
+        data=f"Deleted Customer : {customer_id} ",
+    )
 
 
 # Restore

@@ -81,7 +81,9 @@ def delete_note(
     if not result:
         raise HTTPException(status_code=404, detail="Note not found")
 
-    return {"message": "Note deleted successfully"}
+    return SuccessResponse(
+        message="Note deleted successfully", data=f"Deleted Note : {note_id} "
+    )
 
 
 # Restore
