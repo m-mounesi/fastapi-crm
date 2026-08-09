@@ -1,3 +1,4 @@
+from core.exceptions import CustomerNotFoundException, PermissionDeniedException
 from models.user import UserDB
 from repositories.customer_repository import CustomerRepository
 from models.customer import CustomerDB
@@ -22,12 +23,15 @@ class CustomerService:
 
     # GET ONE
     def get_customer(self, db, customer_id: int, user_id: int):
-        if not self.is_owner(db, customer_id, user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this customer"
-            )
+        customer = self.repo.get_by_id(db, customer_id)
 
-        return self.repo.get_by_id(db, customer_id)
+        if not customer:
+            raise CustomerNotFoundException("Customer not found by this id")
+
+        if customer.created_by != user_id:
+            raise PermissionDeniedException("Permission Denied!")
+
+        return customer
 
     # GET ALL
     def get_customers(self, db, user: UserDB, skip: int = 0, limit: int = 10):
@@ -85,10 +89,3 @@ class CustomerService:
         is_admin = any(role.name == "admin" for role in user.roles)
 
         return self.repo.restore(db, customer_id, user.user_id, is_admin)
-
-    #   Owner check function
-    def is_owner(self, db, customer_id: int, user_id: int):
-        customer = self.repo.get_by_id(db, customer_id)
-        if not customer:
-            raise HTTPException(status_code=404, detail="Customer not found")
-        return customer.created_by == user_id

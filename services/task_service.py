@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 
+from core.exceptions import PermissionDeniedException, TaskNotFoundException
 from models.user import UserDB
 from repositories.task_repository import TaskRepository
 from models.task import TaskDB
@@ -33,29 +34,26 @@ class TaskService:
         return self.repo.create(db, task)
 
     def get_tasks(self, db, project_id: int, user_id: int):
-        if not self.project_service.is_owner(db, project_id, user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this task"
-            )
         return self.repo.get_all(db, project_id)
 
     def get_task(self, db, task_id: int, user_id: int):
-        if not self.is_owner(db, task_id, user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this task"
-            )
-        return self.repo.get_by_id(db, task_id)
-
-    def toggle_task(self, db, task_id: int, user_id: int):
-        if not self.is_owner(db, task_id, user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this task"
-            )
-
-        task = self.repo.get_by_id(db, task_id)
+        task: TaskDB = self.repo.get_by_id(db, task_id)
 
         if not task:
-            return None
+            raise TaskNotFoundException("Task not found by this id")
+
+        if task.created_by != user_id:
+            raise PermissionDeniedException("Permission Denied!")
+
+        return task
+
+    def toggle_task(self, db, task_id: int, user_id: int):
+        task: TaskDB = self.repo.get_by_id(db, task_id)
+
+        if not task:
+            return TaskNotFoundException
+        if task.created_by != user_id:
+            return PermissionDeniedException
 
         task.completed = not task.completed
         return self.repo.update(db, task)
@@ -109,11 +107,3 @@ class TaskService:
         is_admin = any(role.name == "admin" for role in user.roles)
 
         return self.repo.restore(db, task_id, user.user_id, is_admin)
-
-    #   Owner check function
-
-    def is_owner(self, db, task_id: int, user_id: int):
-        task = self.repo.get_by_id(db, task_id)
-        if not task:
-            raise HTTPException(status_code=404, detail="Task not found")
-        return task.created_by == user_id

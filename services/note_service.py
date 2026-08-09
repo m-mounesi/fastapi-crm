@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 
+from core.exceptions import NoteNotFoundException, PermissionDeniedException
 from models.user import UserDB
 from models.note import NoteDB
 from repositories.note_repository import NoteRepository
@@ -22,12 +23,15 @@ class NoteService:
 
     # GET ONE
     def get_note(self, db, note_id: int, user_id: int):
-        if not self.is_owner(db, note_id, user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this note"
-            )
+        note: NoteDB = self.repo.get_by_id(db, note_id)
 
-        return self.repo.get_by_id(db, note_id)
+        if not note:
+            raise NoteNotFoundException("Note not found by this id")
+
+        if note.created_by != user_id:
+            raise PermissionDeniedException("Permission Denied!")
+
+        return note
 
     # GET ALL
     def get_notes(self, db, user: UserDB, skip: int = 0, limit: int = 10):
@@ -82,10 +86,3 @@ class NoteService:
         is_admin = any(role.name == "admin" for role in user.roles)
 
         return self.repo.restore(db, note_id, user.user_id, is_admin)
-
-    # Owner check function
-    def is_owner(self, db, note_id: int, user_id: int):
-        note = self.repo.get_by_id(db, note_id)
-        if not note:
-            raise HTTPException(status_code=404, detail="Note not found")
-        return note.created_by == user_id

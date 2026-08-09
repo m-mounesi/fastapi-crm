@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 
+from core.exceptions import PermissionDeniedException, ProjectNotFoundException
 from models.user import UserDB
 from repositories.project_repository import ProjectRepository
 from models.project import ProjectDB
@@ -31,12 +32,15 @@ class ProjectService:
         )
 
     def get_project(self, db, project_id: int, current_user: UserDB):
-        if not self.is_owner(db, project_id, current_user.user_id):
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this project"
-            )
+        project: ProjectDB = self.repo.get_by_id(db, project_id)
 
-        return self.repo.get_by_id(db, project_id)
+        if not project:
+            raise ProjectNotFoundException("project not found by this id")
+
+        if project.created_by != current_user.user_id:
+            raise PermissionDeniedException("Permission Denied!")
+
+        return project
 
     def update_project(self, db, project_id: int, data, user_id: int):
         project = self.repo.get_by_id(db, project_id)
@@ -76,10 +80,3 @@ class ProjectService:
         is_admin = any(role.name == "admin" for role in user.roles)
 
         return self.repo.restore(db, project_id, user.user_id, is_admin)
-
-    #   Owner check function
-    def is_owner(self, db, project_id: int, user_id: int):
-        project = self.repo.get_by_id(db, project_id)
-        if not project:
-            raise HTTPException(status_code=404, detail="Project not found")
-        return project.created_by == user_id
