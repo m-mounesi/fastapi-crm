@@ -51,9 +51,10 @@ class TaskService:
         task: TaskDB = self.repo.get_by_id(db, task_id)
 
         if not task:
-            return TaskNotFoundException
+            raise TaskNotFoundException("Task not found by this id")
+
         if task.created_by != user_id:
-            return PermissionDeniedException
+            raise PermissionDeniedException("Permission Denied!")
 
         task.completed = not task.completed
         return self.repo.update(db, task)
