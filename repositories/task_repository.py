@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from core.exceptions import PermissionDeniedException, TaskNotFoundException
 from models.task import TaskDB
+from models.user import UserDB
 
 
 class TaskRepository:
@@ -18,10 +19,19 @@ class TaskRepository:
             .first()
         )
 
-    def get_all(self, db, project_id: int):
+    def get_all(
+        self,
+        db,
+        project_id: int | None,
+        user: UserDB,
+        is_admin: bool,
+    ):
         query = db.query(TaskDB).filter(TaskDB.deleted_at.is_(None))
 
-        if project_id:
+        if not is_admin:
+            query = query.filter(TaskDB.created_by == user.user_id)
+
+        if project_id is not None:
             query = query.filter(TaskDB.project_id == project_id)
 
         return query.all()

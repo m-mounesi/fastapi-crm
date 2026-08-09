@@ -33,8 +33,14 @@ class TaskService:
 
         return self.repo.create(db, task)
 
-    def get_tasks(self, db, project_id: int, user_id: int):
-        return self.repo.get_all(db, project_id)
+    def get_tasks(self, db, project_id: int | None, user: UserDB):
+        is_admin = any(role.name == "admin" for role in user.roles)
+        return self.repo.get_all(
+            db,
+            project_id,
+            user,
+            is_admin,
+        )
 
     def get_task(self, db, task_id: int, user_id: int):
         task: TaskDB = self.repo.get_by_id(db, task_id)

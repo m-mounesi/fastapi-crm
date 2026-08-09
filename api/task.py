@@ -31,7 +31,7 @@ def get_tasks(
     service: TaskService = Depends(get_task_service),
     user: UserDB = Depends(require_permission("task.read")),
 ):
-    return service.get_tasks(db, project_id, user_id=user.user_id)
+    return service.get_tasks(db, project_id, user)
 
 
 # GET BY ID
