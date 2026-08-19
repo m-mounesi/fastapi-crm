@@ -1,0 +1,7 @@
+modules/
+├── auth/
+├── users/
+├── customers/
+├── projects/
+├── tasks/
+└── notes/
