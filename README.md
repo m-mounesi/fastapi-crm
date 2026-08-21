@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 # CRM API
+=======
+  # CRM API
+>>>>>>> origin/main
 
 A production-oriented CRM backend built with **FastAPI**, **SQLAlchemy 2**, **Alembic**, **JWT Authentication**, and **Role-Based Access Control (RBAC)**.
 
-The project follows a layered architecture with separation between API, services, repositories, database models, schemas, and security components.
+The project currently follows a layered architecture with separation between API, services, repositories, database models, schemas, and security components.
+
+The architecture is being refactored toward a **Modular Monolith**, with the goal of organizing the system around business modules, improving cohesion, reducing coupling, and establishing clearer module boundaries.
 
 ---
 
@@ -27,8 +33,6 @@ The project follows a layered architecture with separation between API, services
 - Permission-based endpoint protection
 
 Example permissions:
- operator.read
- operator.write
 
-
-It might refactor to Modular monolith
+- `operator.read`
+- `operator.write`
