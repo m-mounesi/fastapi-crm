@@ -1,0 +1,38 @@
+fastapi-crm/
+├── app/
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── exceptions.py
+│   │   └── ...
+│   │
+│   ├── api/
+│   │   └── v1/
+│   │       └── router.py
+│   │
+│   └── modules/
+│       ├── auth/
+│       │   ├── routes.py
+│       │   ├── service.py
+│       │   ├── schemas.py
+│       │   └── ...
+│       │
+│       ├── users/
+│       │   ├── models.py
+│       │   ├── schemas.py
+│       │   ├── repository.py
+│       │   ├── service.py
+│       │   ├── routes.py
+│       │   └── dependencies.py
+│       │
+│       ├── customers/
+│       ├── projects/
+│       ├── tasks/
+│       └── notes/
+│
+├── alembic/
+├── seeders/
+├── tests/
+├── main.py
+├── pyproject.toml
+└── ...
