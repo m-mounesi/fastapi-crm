@@ -1,4 +1,4 @@
-# Mini CRM API
+# CRM API
 
 A production-oriented CRM backend built with **FastAPI**, **SQLAlchemy 2**, **Alembic**, **JWT Authentication**, and **Role-Based Access Control (RBAC)**.
 
