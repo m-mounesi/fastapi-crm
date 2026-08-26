@@ -9,7 +9,7 @@ from core.database import Base
 from models.user import UserDB  # noqa: F401
 from app.modules.customers.models import CustomerDB  # noqa: F401
 from models.task import TaskDB  # noqa: F401
-from models.project import ProjectDB  # noqa: F401
+from app.modules.projects.models import ProjectDB  # noqa: F401
 from models.note import NoteDB  # noqa: F401
 from models.permission import PermissionDB  # noqa: F401
 from models.refresh_token import RefreshTokenDB  # noqa: F401

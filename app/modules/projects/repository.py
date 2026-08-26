@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from core.exceptions import PermissionDeniedException, ProjectNotFoundException
-from models.project import ProjectDB
+from app.modules.projects.models import ProjectDB
 
 
 class ProjectRepository:

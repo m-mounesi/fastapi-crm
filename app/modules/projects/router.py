@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 
 from core.database import get_db
 from models.user import UserDB
-from schemas.project import ProjectCreate, ProjectUpdate, ProjectResponse
+from app.modules.projects.schemas import ProjectCreate, ProjectUpdate, ProjectResponse
 from schemas.schema import SuccessResponse
 from security.dependencies import require_permission
-from services.project_service import ProjectService
+from app.modules.projects.service import ProjectService
 from core.dependencies import get_project_service
 
 router = APIRouter(prefix="/projects", tags=["projects"])

@@ -4,7 +4,7 @@ from core.exceptions import PermissionDeniedException, TaskNotFoundException
 from models.user import UserDB
 from repositories.task_repository import TaskRepository
 from models.task import TaskDB
-from services.project_service import ProjectService
+from app.modules.projects.service import ProjectService
 from repositories.user_repository import UserRepository
 
 
