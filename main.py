@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.modules.customers.router import router as customer_router
 from app.modules.projects.router import router as project_router
-from api.auth import router as auth_router
-from api.task import router as task_router
-from api.admin_rbac import router as admin_rbac_router
-from api.note import router as note_router
+from app.modules.auth.router import router as auth_router
+from app.modules.tasks.router import router as task_router
+from app.modules.rbac.router import router as admin_rbac_router
+from app.modules.notes.router import router as note_router
 from contextlib import asynccontextmanager
 from core.config import settings
 from core.database import SessionLocal

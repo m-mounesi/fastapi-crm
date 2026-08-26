@@ -1,10 +1,10 @@
 from fastapi import HTTPException
 
 from core.exceptions import PermissionDeniedException, ProjectNotFoundException
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.projects.repository import ProjectRepository
 from app.modules.projects.models import ProjectDB
-from repositories.user_repository import UserRepository
+from app.modules.users.repository import UserRepository
 from app.modules.customers.repository import CustomerRepository
 
 

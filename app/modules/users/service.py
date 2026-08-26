@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 from core.exceptions import InvalidTokenException
-from models.refresh_token import RefreshTokenDB
+from app.modules.auth.refresh_token import RefreshTokenDB
 from app.modules.users.repository import UserRepository
 from repositories.refresh_token_repository import RefreshTokenRepository
 from security.password import hash_password, verify_password

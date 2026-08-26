@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from models.role import RoleDB
-from models.permission import PermissionDB
-from models.role_permission import RolePermissionDB
+from app.modules.rbac.models.role import RoleDB
+from app.modules.rbac.models.permission import PermissionDB
+from app.modules.rbac.models.role_permission import RolePermissionDB
 
 
 ROLES = ["admin", "operator", "viewer"]

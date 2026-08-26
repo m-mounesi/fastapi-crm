@@ -1,4 +1,4 @@
-from models.refresh_token import RefreshTokenDB
+from app.modules.auth.refresh_token import RefreshTokenDB
 
 
 class RefreshTokenRepository:

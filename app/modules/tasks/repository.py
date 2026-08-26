@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from core.exceptions import PermissionDeniedException, TaskNotFoundException
 from app.modules.tasks.models import TaskDB
-from models.user import UserDB
+from app.modules.users.models import UserDB
 
 
 class TaskRepository:

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
 from core.exceptions import NoteNotFoundException, PermissionDeniedException
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.notes.models import NoteDB
 from app.modules.notes.repository import NoteRepository
 

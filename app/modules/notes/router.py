@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from core.database import get_db
 from core.dependencies import get_note_service
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.notes.service import NoteService
 from app.modules.notes.schemas import NoteCreate, NoteUpdate, NoteResponse
 from schemas.schema import SuccessResponse

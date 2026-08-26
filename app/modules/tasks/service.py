@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 
 from core.exceptions import PermissionDeniedException, TaskNotFoundException
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.tasks.repository import TaskRepository
 from app.modules.tasks.models import TaskDB
 from app.modules.projects.service import ProjectService
-from repositories.user_repository import UserRepository
+from app.modules.users.repository import UserRepository
 
 
 class TaskService:

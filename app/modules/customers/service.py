@@ -1,5 +1,5 @@
 from core.exceptions import CustomerNotFoundException, PermissionDeniedException
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.customers.repository import CustomerRepository
 from app.modules.customers.models import CustomerDB
 from fastapi import HTTPException

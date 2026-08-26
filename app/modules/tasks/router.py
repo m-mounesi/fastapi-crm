@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from core.database import get_db
-from models.user import UserDB
+from app.modules.users.models import UserDB
 from app.modules.tasks.schemas import TaskCreate, TaskUpdate, TaskResponse
 from schemas.schema import SuccessResponse
 from security.dependencies import require_permission

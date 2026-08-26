@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from core.database import get_db
-from repositories.rbac_repository import RBACRepository
+from app.modules.rbac.repository import RBACRepository
 from security.auth import get_current_user
 from core.exceptions import PermissionDeniedException
 from core.dependencies import get_rbac_repository

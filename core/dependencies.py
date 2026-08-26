@@ -3,16 +3,16 @@ from fastapi import Depends
 from app.modules.customers.repository import CustomerRepository
 from app.modules.projects.repository import ProjectRepository
 from repositories.refresh_token_repository import RefreshTokenRepository
-from repositories.task_repository import TaskRepository
-from repositories.user_repository import UserRepository
-from repositories.rbac_repository import RBACRepository
-from repositories.note_repository import NoteRepository
+from app.modules.tasks.repository import TaskRepository
+from app.modules.users.repository import UserRepository
+from app.modules.rbac.repository import RBACRepository
+from app.modules.notes.repository import NoteRepository
 from app.modules.projects.service import ProjectService
-from services.rbac_service import RBACService
-from services.task_service import TaskService
-from services.auth_service import AuthService
+from app.modules.rbac.service import RBACService
+from app.modules.tasks.service import TaskService
+from app.modules.users.service import AuthService
 from app.modules.customers.service import CustomerService
-from services.note_service import NoteService
+from app.modules.notes.service import NoteService
 
 
 # CUSTOMER
