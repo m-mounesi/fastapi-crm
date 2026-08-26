@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from repositories.customer_repository import CustomerRepository
+from app.modules.customers.repository import CustomerRepository
 from repositories.project_repository import ProjectRepository
 from repositories.refresh_token_repository import RefreshTokenRepository
 from repositories.task_repository import TaskRepository
@@ -11,7 +11,7 @@ from services.project_service import ProjectService
 from services.rbac_service import RBACService
 from services.task_service import TaskService
 from services.auth_service import AuthService
-from services.customer_service import CustomerService
+from app.modules.customers.service import CustomerService
 from services.note_service import NoteService
 
 

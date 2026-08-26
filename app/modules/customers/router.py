@@ -5,8 +5,12 @@ from core.database import get_db
 from core.dependencies import get_customer_service
 from models.user import UserDB
 from schemas.schema import SuccessResponse
-from services.customer_service import CustomerService
-from schemas.customer import CustomerCreate, CustomerUpdate, CustomerResponse
+from app.modules.customers.service import CustomerService
+from app.modules.customers.schemas import (
+    CustomerCreate,
+    CustomerUpdate,
+    CustomerResponse,
+)
 
 from security.dependencies import require_permission
 

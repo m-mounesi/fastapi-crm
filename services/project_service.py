@@ -5,7 +5,7 @@ from models.user import UserDB
 from repositories.project_repository import ProjectRepository
 from models.project import ProjectDB
 from repositories.user_repository import UserRepository
-from repositories.customer_repository import CustomerRepository
+from app.modules.customers.repository import CustomerRepository
 
 
 class ProjectService:

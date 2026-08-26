@@ -1,5 +1,5 @@
 from core.exceptions import CustomerNotFoundException, PermissionDeniedException
-from models.customer import CustomerDB
+from app.modules.customers.models import CustomerDB
 from datetime import datetime, timezone
 
 
