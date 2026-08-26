@@ -17,11 +17,10 @@ class ProjectService:
     ):
         self.repo = repo
         self.user_repo = user_repo
-        self.customer_rep = customer_repo
+        self.customer_repo = customer_repo
 
     def create_project(self, db, data, user_id: int):
-        customer_repo = CustomerRepository()
-        if not customer_repo.get_by_id(db, data.customer_id):
+        if not self.customer_repo.get_by_id(db, data.customer_id):
             raise HTTPException(status_code=404, detail="Customer not found")
 
         project = ProjectDB(

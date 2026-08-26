@@ -4,7 +4,7 @@ from core.database import Base
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from models.role import RoleDB
+    from app.modules.rbac.models.role import RoleDB
 
 
 class UserDB(Base):

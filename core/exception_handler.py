@@ -15,7 +15,7 @@ from core.exceptions import (
     InvalidTokenException,
 )
 from core.logger import get_logger
-from schemas.schema import ErrorResponse
+from core.schemas import ErrorResponse
 
 logger = get_logger("exception")
 

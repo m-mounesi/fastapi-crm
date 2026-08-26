@@ -2,7 +2,7 @@ from fastapi import Depends
 
 from app.modules.customers.repository import CustomerRepository
 from app.modules.projects.repository import ProjectRepository
-from repositories.refresh_token_repository import RefreshTokenRepository
+from app.modules.auth.repository import RefreshTokenRepository
 from app.modules.tasks.repository import TaskRepository
 from app.modules.users.repository import UserRepository
 from app.modules.rbac.repository import RBACRepository

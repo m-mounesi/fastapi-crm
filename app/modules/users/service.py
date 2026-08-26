@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from core.exceptions import InvalidTokenException
 from app.modules.auth.refresh_token import RefreshTokenDB
 from app.modules.users.repository import UserRepository
-from repositories.refresh_token_repository import RefreshTokenRepository
+from app.modules.auth.repository import RefreshTokenRepository
 from security.password import hash_password, verify_password
 from security.jwt import create_access_token, create_refresh_token, decode_refresh_token
 from core.logger import get_logger, get_error_logger

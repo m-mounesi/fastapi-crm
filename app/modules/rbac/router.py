@@ -5,7 +5,7 @@ from core.dependencies import get_rbac_service
 from app.modules.rbac.service import RBACService
 from security.dependencies import require_permission
 from core.logger import get_logger
-from schemas.schema import SuccessResponse
+from core.schemas import SuccessResponse
 
 router = APIRouter(prefix="/admin/rbac", tags=["RBAC"])
 

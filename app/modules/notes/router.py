@@ -6,7 +6,7 @@ from core.dependencies import get_note_service
 from app.modules.users.models import UserDB
 from app.modules.notes.service import NoteService
 from app.modules.notes.schemas import NoteCreate, NoteUpdate, NoteResponse
-from schemas.schema import SuccessResponse
+from core.schemas import SuccessResponse
 from security.dependencies import require_permission
 
 router = APIRouter(prefix="/notes", tags=["notes"])

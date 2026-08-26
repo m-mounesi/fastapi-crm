@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from core.database import get_db
 from app.modules.users.models import UserDB
 from app.modules.projects.schemas import ProjectCreate, ProjectUpdate, ProjectResponse
-from schemas.schema import SuccessResponse
+from core.schemas import SuccessResponse
 from security.dependencies import require_permission
 from app.modules.projects.service import ProjectService
 from core.dependencies import get_project_service

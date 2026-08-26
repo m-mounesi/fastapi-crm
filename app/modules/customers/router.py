@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from core.database import get_db
 from core.dependencies import get_customer_service
 from app.modules.users.models import UserDB
-from schemas.schema import SuccessResponse
+from core.schemas import SuccessResponse
 from app.modules.customers.service import CustomerService
 from app.modules.customers.schemas import (
     CustomerCreate,

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from core.database import get_db
 from app.modules.users.models import UserDB
 from app.modules.tasks.schemas import TaskCreate, TaskUpdate, TaskResponse
-from schemas.schema import SuccessResponse
+from core.schemas import SuccessResponse
 from security.dependencies import require_permission
 from core.dependencies import get_task_service
 from app.modules.tasks.service import TaskService
