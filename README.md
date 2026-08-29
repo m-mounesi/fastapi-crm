@@ -34,4 +34,5 @@ Example permissions:
 - `operator.write`
    
 
-     + Pytest
+     + Pytest  
+ integration test
