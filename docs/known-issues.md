@@ -35,4 +35,17 @@
 - Current workaround: None. HTTP status is correct; only the error type differs.
 - Planned fix: Use `PermissionDeniedException` consistently across all ownership checks.
 
+## RBAC
+
+### `assign_permission_to_role` is not idempotent
+
+- Status: Open
+- Found by: Pytest
+- Location: `app/modules/rbac/repository.py:46-51`
+- Symptom: Assigning the same permission to a role more than once causes a `UNIQUE constraint failed` error and results in HTTP 500.
+- Cause: `assign_permission_to_role` inserts without checking for existing records. `assign_role` handles duplicates safely, but `assign_permission` does not.
+- Test: Discovered while setting up Projects test fixtures (`tests/projects/test_projects.py`).
+- Current workaround: Ensure permissions are only granted once per role in test fixtures.
+- Planned fix: Add a duplicate check in `RBACService.assign_permission` or `RBACRepository.assign_permission_to_role`, consistent with how `assign_role` handles idempotency.
+
 
