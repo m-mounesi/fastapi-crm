@@ -83,4 +83,50 @@
 - Current workaround: None. HTTP status is correct; only the error type differs.
 - Planned fix: Use `TaskNotFoundException` consistently in the service layer for all not-found cases.
 
+## Notes
+
+### POST `/notes/` returns 200 instead of 201
+
+- Status: Open
+- Found by: Pytest
+- Location: `app/modules/notes/router.py:16`
+- Symptom: The note creation endpoint returns HTTP 200.
+- Cause: The router does not set `status_code=201`.
+- Test: `tests/notes/test_notes.py::TestCreateNote::test_create_note_success`
+- Current workaround: None.
+- Planned fix: Add `status_code=201` to the `@router.post("/")` decorator.
+
+### Inconsistent 403 error types for ownership violations
+
+- Status: Open
+- Found by: Pytest
+- Location: `app/modules/notes/service.py:31-32`, `service.py:53-56`, `service.py:76-79`
+- Symptom: `get_note` raises `PermissionDeniedException` (`error_type: "PermissionDenied"`), while `update_note` and `delete_note` raise `HTTPException(403)` (`error_type: "HTTPException"`).
+- Cause: Mixed exception types for the same ownership-denied concept.
+- Test: `tests/notes/test_notes.py::TestReadNotes::test_get_other_users_note_denied`, `TestUpdateNote::test_update_other_users_note_denied`, and `TestDeleteNote::test_delete_other_users_note_denied`
+- Current workaround: None. HTTP status is correct; only the error type differs.
+- Planned fix: Use `PermissionDeniedException` consistently across all ownership checks.
+
+### Inconsistent 404 error types for missing notes
+
+- Status: Open
+- Found by: Pytest
+- Location: `app/modules/notes/service.py:28-29`, `service.py:48-51`, `service.py:71-74`
+- Symptom: `get_note` raises `NoteNotFoundException` (`error_type: "NoteNotFound"`), while `update_note` and `delete_note` return `None` and the router raises `HTTPException(404)` (`error_type: "HTTPException"`).
+- Cause: Mixed patterns for not-found handling.
+- Test: `tests/notes/test_notes.py::TestReadNotes::test_get_nonexistent_note`, `TestUpdateNote::test_update_nonexistent_note`, and `TestDeleteNote::test_delete_nonexistent_note`
+- Current workaround: None. HTTP status is correct; only the error type differs.
+- Planned fix: Use `NoteNotFoundException` consistently in the service layer for all not-found cases.
+
+### Missing application-level FK validation for customer_id / project_id
+
+- Status: Open
+- Found by: Pytest
+- Location: `app/modules/notes/service.py:14-22`
+- Symptom: `create_note` accepts any `customer_id` or `project_id` without validating that the referenced Customer or Project exists. With the current SQLite test configuration (FK enforcement disabled), an invalid `customer_id` is accepted and the API returns 200.
+- Cause: The Notes service does not validate foreign key references before inserting.
+- Test: `tests/notes/test_notes.py::TestCreateNote::test_create_note_invalid_customer_id`
+- Current workaround: None. The bug is environment-dependent: SQLite allows the invalid reference; PostgreSQL enforces FK constraints and would return 500 (IntegrityError).
+- Planned fix: Add application-level validation in `NoteService.create_note` to verify `customer_id` and `project_id` reference existing records, consistent with how `ProjectService.create_project` validates `customer_id`.
+
 
