@@ -1,0 +1,80 @@
+FASTAPI-CRM/
+│
+├── app/
+│   │
+│   ├── main.py
+│   │
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── dependencies.py
+│   │   ├── exceptions.py
+│   │   ├── exception_handler.py
+│   │   ├── limiter.py
+│   │   └── logger.py
+│   │
+│   ├── security/
+│   │   ├── jwt.py
+│   │   ├── password.py
+│   │   ├── auth.py
+│   │   └── dependencies.py
+│   │
+│   └── modules/
+│       │
+│       ├── auth/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       ├── users/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       ├── customers/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       ├── projects/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       ├── tasks/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       ├── notes/
+│       │   ├── router.py
+│       │   ├── service.py
+│       │   ├── repository.py
+│       │   ├── schemas.py
+│       │   └── models.py
+│       │
+│       └── rbac/
+│           ├── router.py
+│           ├── service.py
+│           ├── repository.py
+│           ├── schemas.py
+│           └── models.py
+│
+├── alembic/
+├── seeders/
+├── tests/
+├── logs/
+├── .env
+├── alembic.ini
+├── pyproject.toml
+└── README.md

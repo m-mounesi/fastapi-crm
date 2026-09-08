@@ -1,6 +1,6 @@
-from models.user import UserDB
-from models.role import RoleDB
-from models.user_role import UserRoleDB
+from app.modules.users.models import UserDB
+from app.modules.rbac.models.role import RoleDB
+from app.modules.rbac.models.user_role import UserRoleDB
 from core.config import settings
 from security.password import hash_password
 
