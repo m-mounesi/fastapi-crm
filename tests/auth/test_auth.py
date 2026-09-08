@@ -1,6 +1,3 @@
-import pytest
-
-
 class TestRegister:
     def test_register_success(self, client, seed_db):
         response = client.post(
@@ -77,11 +74,6 @@ class TestLogin:
 
 
 class TestRefresh:
-    @pytest.mark.xfail(
-        reason="Application bug: create_refresh_token generates identical JWTs "
-        "(no iat/jti), causing UNIQUE constraint on refresh token regeneration",
-        strict=True,
-    )
     def test_refresh_token_success(self, client, seed_db):
         client.post(
             "/auth/register",

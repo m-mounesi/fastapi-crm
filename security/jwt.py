@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta, timezone
+from uuid import uuid4
+
 from jose import jwt, JWTError
 from core.config import settings
 from core.exceptions import UnauthorizedException
@@ -40,6 +42,7 @@ def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
     payload = data.copy()
 
     payload["type"] = "refresh"
+    payload["jti"] = str(uuid4())
     payload["exp"] = datetime.now(timezone.utc) + timedelta(days=REFRESH_EXPIRE_DAYS)
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
