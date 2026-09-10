@@ -119,13 +119,12 @@
 
 ### Missing application-level FK validation for customer_id / project_id
 
-- Status: Open
+- Status: Resolved
 - Found by: Pytest
 - Location: `app/modules/notes/service.py:14-22`
 - Symptom: `create_note` accepts any `customer_id` or `project_id` without validating that the referenced Customer or Project exists. With the current SQLite test configuration (FK enforcement disabled), an invalid `customer_id` is accepted and the API returns 200.
 - Cause: The Notes service does not validate foreign key references before inserting.
 - Test: `tests/notes/test_notes.py::TestCreateNote::test_create_note_invalid_customer_id`
-- Current workaround: None. The bug is environment-dependent: SQLite allows the invalid reference; PostgreSQL enforces FK constraints and would return 500 (IntegrityError).
-- Planned fix: Add application-level validation in `NoteService.create_note` to verify `customer_id` and `project_id` reference existing records, consistent with how `ProjectService.create_project` validates `customer_id`.
+- Resolution: Injected `CustomerRepository` and `ProjectRepository` into `NoteService`. Added application-level FK validation in `create_note` and `update_note`, raising `CustomerNotFoundException` / `ProjectNotFoundException` for invalid references. Behavior is now consistent regardless of database engine.
 
 

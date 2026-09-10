@@ -93,5 +93,9 @@ def get_note_repository():
     return NoteRepository()
 
 
-def get_note_service(repo: NoteRepository = Depends(get_note_repository)):
-    return NoteService(repo)
+def get_note_service(
+    repo: NoteRepository = Depends(get_note_repository),
+    customer_repo: CustomerRepository = Depends(get_customer_repository),
+    project_repo: ProjectRepository = Depends(get_project_repository),
+):
+    return NoteService(repo, customer_repo, project_repo)

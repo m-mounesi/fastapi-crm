@@ -1,15 +1,37 @@
-from core.exceptions import NoteNotFoundException, PermissionDeniedException
+from core.exceptions import (
+    CustomerNotFoundException,
+    NoteNotFoundException,
+    PermissionDeniedException,
+    ProjectNotFoundException,
+)
 from app.modules.users.models import UserDB
 from app.modules.notes.models import NoteDB
 from app.modules.notes.repository import NoteRepository
+from app.modules.customers.repository import CustomerRepository
+from app.modules.projects.repository import ProjectRepository
 
 
 class NoteService:
-    def __init__(self, repo: NoteRepository):
+    def __init__(
+        self,
+        repo: NoteRepository,
+        customer_repo: CustomerRepository,
+        project_repo: ProjectRepository,
+    ):
         self.repo = repo
+        self.customer_repo = customer_repo
+        self.project_repo = project_repo
 
     # CREATE
     def create_note(self, db, data, user_id: int):
+        if data.customer_id is not None:
+            if not self.customer_repo.get_by_id(db, data.customer_id):
+                raise CustomerNotFoundException("Customer not found")
+
+        if data.project_id is not None:
+            if not self.project_repo.get_by_id(db, data.project_id):
+                raise ProjectNotFoundException("Project not found")
+
         note = NoteDB(
             content=data.content,
             customer_id=data.customer_id,
@@ -55,9 +77,13 @@ class NoteService:
             note.content = data.content
 
         if data.customer_id is not None:
+            if not self.customer_repo.get_by_id(db, data.customer_id):
+                raise CustomerNotFoundException("Customer not found")
             note.customer_id = data.customer_id
 
         if data.project_id is not None:
+            if not self.project_repo.get_by_id(db, data.project_id):
+                raise ProjectNotFoundException("Project not found")
             note.project_id = data.project_id
 
         return self.repo.update(db, note)

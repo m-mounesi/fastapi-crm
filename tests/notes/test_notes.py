@@ -79,8 +79,20 @@ class TestCreateNote:
             },
             headers=auth_headers,
         )
-        assert response.status_code == 201
-        assert response.json()["customer_id"] == 9999
+        assert response.status_code == 404
+        assert response.json()["error_type"] == "CustomerNotFound"
+
+    def test_create_note_invalid_project_id(self, client, auth_headers):
+        response = client.post(
+            "/notes/",
+            json={
+                "content": "Note with bad project",
+                "project_id": 9999,
+            },
+            headers=auth_headers,
+        )
+        assert response.status_code == 404
+        assert response.json()["error_type"] == "ProjectNotFound"
 
 
 class TestReadNotes:
@@ -333,6 +345,38 @@ class TestUpdateNote:
         )
         assert response.status_code == 404
         assert response.json()["error_type"] == "NoteNotFound"
+
+    def test_update_note_invalid_customer_id(self, client, auth_headers):
+        create_resp = client.post(
+            "/notes/",
+            json={"content": "Valid note"},
+            headers=auth_headers,
+        )
+        note_id = create_resp.json()["id"]
+
+        response = client.put(
+            f"/notes/{note_id}",
+            json={"customer_id": 9999},
+            headers=auth_headers,
+        )
+        assert response.status_code == 404
+        assert response.json()["error_type"] == "CustomerNotFound"
+
+    def test_update_note_invalid_project_id(self, client, auth_headers):
+        create_resp = client.post(
+            "/notes/",
+            json={"content": "Valid note"},
+            headers=auth_headers,
+        )
+        note_id = create_resp.json()["id"]
+
+        response = client.put(
+            f"/notes/{note_id}",
+            json={"project_id": 9999},
+            headers=auth_headers,
+        )
+        assert response.status_code == 404
+        assert response.json()["error_type"] == "ProjectNotFound"
 
 
 class TestDeleteNote:
