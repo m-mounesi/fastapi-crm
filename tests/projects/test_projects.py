@@ -247,6 +247,19 @@ class TestRestoreProject:
         assert get_resp.status_code == 200
         assert get_resp.json()["title"] == "Phoenix"
 
+    def test_restore_other_users_project_denied(
+        self, seeded_client, user_a_hdrs, user_b_hdrs
+    ):
+        cid = _create_customer_via_api(seeded_client, user_a_hdrs, name="Cust R")
+        create_resp = _create_project(
+            seeded_client, user_a_hdrs, customer_id=cid, title="A's Project"
+        )
+        pid = create_resp.json()["id"]
+        seeded_client.delete(f"/projects/{pid}", headers=user_a_hdrs)
+        resp = seeded_client.post(f"/projects/{pid}/restore", headers=user_b_hdrs)
+        assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
 
 class TestProjectAuth:
     def test_unauthenticated_access_denied(self, seeded_client):
