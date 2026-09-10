@@ -1,5 +1,3 @@
-from fastapi import HTTPException
-
 from core.exceptions import NoteNotFoundException, PermissionDeniedException
 from app.modules.users.models import UserDB
 from app.modules.notes.models import NoteDB
@@ -48,12 +46,10 @@ class NoteService:
         note = self.repo.get_by_id(db, note_id)
 
         if not note:
-            return None
+            raise NoteNotFoundException("Note not found by this id")
 
         if note.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this note"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         if data.content is not None:
             note.content = data.content
@@ -71,12 +67,10 @@ class NoteService:
         note = self.repo.get_by_id(db, note_id)
 
         if not note:
-            return None
+            raise NoteNotFoundException("Note not found by this id")
 
         if note.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this note"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         self.repo.delete(db, note)
         return True

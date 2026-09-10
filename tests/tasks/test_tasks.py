@@ -38,7 +38,7 @@ def _grant_permissions(client, admin_headers, permissions, role_name="viewer"):
 
 def _create_customer(client, headers, name="Default Customer"):
     resp = client.post("/customers/", json={"name": name}, headers=headers)
-    assert resp.status_code == 200
+    assert resp.status_code == 201
     return resp.json()["id"]
 
 
@@ -94,7 +94,7 @@ class TestCreateTask:
         resp = _create_task(
             seeded_client, admin_hdrs, project_id=pid, title="Fix login bug"
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 201
         body = resp.json()
         assert body["title"] == "Fix login bug"
         assert body["project_id"] == pid
@@ -147,6 +147,7 @@ class TestReadTasks:
     def test_get_nonexistent_task(self, seeded_client, admin_hdrs):
         resp = seeded_client.get("/tasks/9999", headers=admin_hdrs)
         assert resp.status_code == 404
+        assert resp.json()["error_type"] == "TaskNotFound"
 
     def test_get_tasks_filter_by_project(self, seeded_client, admin_hdrs):
         cid = _create_customer(seeded_client, admin_hdrs)
@@ -226,6 +227,7 @@ class TestToggleTask:
         tid = create_resp.json()["id"]
         resp = seeded_client.patch(f"/tasks/{tid}/toggle", headers=user_b_hdrs)
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
 
 
 class TestUpdateTask:
@@ -261,6 +263,16 @@ class TestUpdateTask:
             headers=user_b_hdrs,
         )
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_update_nonexistent_task(self, seeded_client, admin_hdrs):
+        resp = seeded_client.put(
+            "/tasks/9999",
+            json={"title": "Ghost"},
+            headers=admin_hdrs,
+        )
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "TaskNotFound"
 
 
 class TestDeleteTask:
@@ -288,6 +300,12 @@ class TestDeleteTask:
         tid = create_resp.json()["id"]
         resp = seeded_client.delete(f"/tasks/{tid}", headers=user_b_hdrs)
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_delete_nonexistent_task(self, seeded_client, admin_hdrs):
+        resp = seeded_client.delete("/tasks/9999", headers=admin_hdrs)
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "TaskNotFound"
 
 
 class TestRestoreTask:

@@ -35,7 +35,7 @@ def _grant_permissions(client, admin_headers, permissions, role_name="viewer"):
 
 def _create_customer_via_api(client, headers, name="Default Customer"):
     resp = client.post("/customers/", json={"name": name}, headers=headers)
-    assert resp.status_code == 200
+    assert resp.status_code == 201
     return resp.json()["id"]
 
 
@@ -125,6 +125,7 @@ class TestReadProjects:
     def test_get_nonexistent_project(self, seeded_client, admin_hdrs):
         resp = seeded_client.get("/projects/9999", headers=admin_hdrs)
         assert resp.status_code == 404
+        assert resp.json()["error_type"] == "ProjectNotFound"
 
 
 class TestProjectOwnershipVisibility:
@@ -184,6 +185,16 @@ class TestUpdateProject:
             headers=user_b_hdrs,
         )
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_update_nonexistent_project(self, seeded_client, admin_hdrs):
+        resp = seeded_client.put(
+            "/projects/9999",
+            json={"title": "Ghost"},
+            headers=admin_hdrs,
+        )
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "ProjectNotFound"
 
 
 class TestDeleteProject:
@@ -209,6 +220,12 @@ class TestDeleteProject:
         pid = create_resp.json()["id"]
         resp = seeded_client.delete(f"/projects/{pid}", headers=user_b_hdrs)
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_delete_nonexistent_project(self, seeded_client, admin_hdrs):
+        resp = seeded_client.delete("/projects/9999", headers=admin_hdrs)
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "ProjectNotFound"
 
 
 class TestRestoreProject:

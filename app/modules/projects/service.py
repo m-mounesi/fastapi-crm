@@ -1,6 +1,8 @@
-from fastapi import HTTPException
-
-from core.exceptions import PermissionDeniedException, ProjectNotFoundException
+from core.exceptions import (
+    CustomerNotFoundException,
+    PermissionDeniedException,
+    ProjectNotFoundException,
+)
 from app.modules.users.models import UserDB
 from app.modules.projects.repository import ProjectRepository
 from app.modules.projects.models import ProjectDB
@@ -21,7 +23,7 @@ class ProjectService:
 
     def create_project(self, db, data, user_id: int):
         if not self.customer_repo.get_by_id(db, data.customer_id):
-            raise HTTPException(status_code=404, detail="Customer not found")
+            raise CustomerNotFoundException("Customer not found")
 
         project = ProjectDB(
             title=data.title, customer_id=data.customer_id, created_by=user_id
@@ -51,12 +53,10 @@ class ProjectService:
         project = self.repo.get_by_id(db, project_id)
 
         if not project:
-            return None
+            raise ProjectNotFoundException("project not found by this id")
 
         if project.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this project"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         if data.title is not None:
             project.title = data.title
@@ -70,12 +70,10 @@ class ProjectService:
         project = self.repo.get_by_id(db, project_id)
 
         if not project:
-            return None
+            raise ProjectNotFoundException("project not found by this id")
 
         if project.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this project"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         self.repo.delete(db, project)
         return True

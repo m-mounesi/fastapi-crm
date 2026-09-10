@@ -2,7 +2,6 @@ from core.exceptions import CustomerNotFoundException, PermissionDeniedException
 from app.modules.users.models import UserDB
 from app.modules.customers.repository import CustomerRepository
 from app.modules.customers.models import CustomerDB
-from fastapi import HTTPException
 
 
 class CustomerService:
@@ -48,12 +47,10 @@ class CustomerService:
         customer = self.repo.get_by_id(db, customer_id)
 
         if not customer:
-            return None
+            raise CustomerNotFoundException("Customer not found by this id")
 
         if customer.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this customer"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         if data.name is not None:
             customer.name = data.name
@@ -74,12 +71,10 @@ class CustomerService:
         customer = self.repo.get_by_id(db, customer_id)
 
         if not customer:
-            return None
+            raise CustomerNotFoundException("Customer not found by this id")
 
         if customer.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this customer"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         self.repo.delete(db, customer)
         return True

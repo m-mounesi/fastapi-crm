@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from core.database import get_db
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
 # CREATE Task
-@router.post("/", response_model=TaskResponse)
+@router.post("/", response_model=TaskResponse, status_code=201)
 def create_task(
     data: TaskCreate,
     db: Session = Depends(get_db),
@@ -55,9 +55,6 @@ def toggle_task(
 ):
     task = service.toggle_task(db, task_id, user.user_id)
 
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-
     return task
 
 
@@ -72,9 +69,6 @@ def update_task(
 ):
     task = service.update_task(db, task_id, data, user.user_id)
 
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
-
     return task
 
 
@@ -86,10 +80,7 @@ def delete_task(
     service: TaskService = Depends(get_task_service),
     user: UserDB = Depends(require_permission("task.delete")),
 ):
-    result = service.delete_task(db, task_id, user.user_id)
-
-    if not result:
-        raise HTTPException(status_code=404, detail="Task not found")
+    service.delete_task(db, task_id, user.user_id)
 
     return SuccessResponse(
         message="Task deleted successfully", data=f"Deleted Task : {task_id} "
@@ -105,9 +96,6 @@ def restore_task(
     current_user: UserDB = Depends(require_permission("task.restore")),
 ):
     task = service.restore_task(db, task_id, current_user)
-
-    if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
 
     return SuccessResponse(
         message="Task restored successfully", data=f"task : {task.title} "

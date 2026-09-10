@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from core.database import get_db
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/notes", tags=["notes"])
 
 
 # CREATE Note
-@router.post("/", response_model=NoteResponse)
+@router.post("/", response_model=NoteResponse, status_code=201)
 def create_note(
     data: NoteCreate,
     service: NoteService = Depends(get_note_service),
@@ -45,9 +45,6 @@ def get_note(
 ):
     note = service.get_note(db, note_id, current_user.user_id)
 
-    if not note:
-        raise HTTPException(status_code=404, detail="Note not found")
-
     return note
 
 
@@ -62,9 +59,6 @@ def update_note(
 ):
     note = service.update_note(db, note_id, data, current_user.user_id)
 
-    if not note:
-        raise HTTPException(status_code=404, detail="Note not found")
-
     return note
 
 
@@ -76,10 +70,7 @@ def delete_note(
     service: NoteService = Depends(get_note_service),
     current_user: UserDB = Depends(require_permission("note.delete")),
 ):
-    result = service.delete_note(db, note_id, current_user.user_id)
-
-    if not result:
-        raise HTTPException(status_code=404, detail="Note not found")
+    service.delete_note(db, note_id, current_user.user_id)
 
     return SuccessResponse(
         message="Note deleted successfully", data=f"Deleted Note : {note_id} "
@@ -95,9 +86,6 @@ def restore_note(
     current_user: UserDB = Depends(require_permission("note.restore")),
 ):
     note = service.restore_note(db, note_id, current_user)
-
-    if not note:
-        raise HTTPException(status_code=404, detail="Note not found")
 
     return SuccessResponse(
         message="Note restored successfully", data=f"note : {note.content[:30]}... "

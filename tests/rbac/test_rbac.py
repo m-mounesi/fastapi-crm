@@ -170,7 +170,7 @@ class TestRBACAuthorizationBoundaries:
             json={"name": "Test Customer"},
             headers=viewer_hdrs,
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 201
         body = resp.json()
         assert body["name"] == "Test Customer"
 

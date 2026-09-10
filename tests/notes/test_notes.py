@@ -8,7 +8,7 @@ class TestCreateNote:
             json={"content": "Test note content"},
             headers=auth_headers,
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         data = response.json()
         assert data["content"] == "Test note content"
         assert data["created_by"] is not None
@@ -38,7 +38,7 @@ class TestCreateNote:
             },
             headers=auth_headers,
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         data = response.json()
         assert data["content"] == "Note with customer"
         assert data["customer_id"] == customer.id
@@ -65,7 +65,7 @@ class TestCreateNote:
             },
             headers=auth_headers,
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         data = response.json()
         assert data["content"] == "Note with project"
         assert data["project_id"] == project.id
@@ -79,7 +79,7 @@ class TestCreateNote:
             },
             headers=auth_headers,
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         assert response.json()["customer_id"] == 9999
 
 
@@ -155,6 +155,7 @@ class TestReadNotes:
     def test_get_nonexistent_note(self, client, auth_headers):
         response = client.get("/notes/9999", headers=auth_headers)
         assert response.status_code == 404
+        assert response.json()["error_type"] == "NoteNotFound"
 
     def test_get_other_users_note_denied(self, client, auth_headers, db_session):
         from app.modules.users.repository import UserRepository
@@ -186,6 +187,7 @@ class TestReadNotes:
 
         response = client.get(f"/notes/{note_id}", headers=user2_headers)
         assert response.status_code == 403
+        assert response.json()["error_type"] == "PermissionDenied"
 
 
 class TestOwnershipVisibility:
@@ -321,6 +323,7 @@ class TestUpdateNote:
             headers=user2_headers,
         )
         assert response.status_code == 403
+        assert response.json()["error_type"] == "PermissionDenied"
 
     def test_update_nonexistent_note(self, client, auth_headers):
         response = client.put(
@@ -329,6 +332,7 @@ class TestUpdateNote:
             headers=auth_headers,
         )
         assert response.status_code == 404
+        assert response.json()["error_type"] == "NoteNotFound"
 
 
 class TestDeleteNote:
@@ -378,10 +382,12 @@ class TestDeleteNote:
 
         response = client.delete(f"/notes/{note_id}", headers=user2_headers)
         assert response.status_code == 403
+        assert response.json()["error_type"] == "PermissionDenied"
 
     def test_delete_nonexistent_note(self, client, auth_headers):
         response = client.delete("/notes/9999", headers=auth_headers)
         assert response.status_code == 404
+        assert response.json()["error_type"] == "NoteNotFound"
 
 
 class TestRestoreNote:

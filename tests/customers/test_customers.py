@@ -83,7 +83,7 @@ class TestCreateCustomer:
             phone="555-0100",
             description="A test customer",
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 201
         body = resp.json()
         assert body["name"] == "Acme Corp"
         assert body["email"] == "acme@example.com"
@@ -122,6 +122,7 @@ class TestReadCustomers:
     def test_get_nonexistent_customer(self, seeded_client, admin_hdrs):
         resp = seeded_client.get("/customers/9999", headers=admin_hdrs)
         assert resp.status_code == 404
+        assert resp.json()["error_type"] == "CustomerNotFound"
 
     def test_admin_sees_all_customers(
         self, seeded_client, admin_hdrs, user_a_hdrs, user_b_hdrs
@@ -189,6 +190,16 @@ class TestUpdateCustomer:
             headers=user_b_hdrs,
         )
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_update_nonexistent_customer(self, seeded_client, admin_hdrs):
+        resp = seeded_client.put(
+            "/customers/9999",
+            json={"name": "Ghost"},
+            headers=admin_hdrs,
+        )
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "CustomerNotFound"
 
 
 class TestDeleteCustomer:
@@ -214,6 +225,12 @@ class TestDeleteCustomer:
         cid = create_resp.json()["id"]
         resp = seeded_client.delete(f"/customers/{cid}", headers=user_b_hdrs)
         assert resp.status_code == 403
+        assert resp.json()["error_type"] == "PermissionDenied"
+
+    def test_delete_nonexistent_customer(self, seeded_client, admin_hdrs):
+        resp = seeded_client.delete("/customers/9999", headers=admin_hdrs)
+        assert resp.status_code == 404
+        assert resp.json()["error_type"] == "CustomerNotFound"
 
 
 class TestRestoreCustomer:

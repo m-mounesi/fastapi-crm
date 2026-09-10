@@ -1,6 +1,10 @@
 from fastapi import HTTPException
 
-from core.exceptions import PermissionDeniedException, TaskNotFoundException
+from core.exceptions import (
+    PermissionDeniedException,
+    ProjectNotFoundException,
+    TaskNotFoundException,
+)
 from app.modules.users.models import UserDB
 from app.modules.tasks.repository import TaskRepository
 from app.modules.tasks.models import TaskDB
@@ -22,7 +26,7 @@ class TaskService:
     def create_task(self, db, data, user_id: int):
         project = self.project_service.repo.get_by_id(db, data.project_id)
         if not project:
-            raise HTTPException(status_code=404, detail="Project not found")
+            raise ProjectNotFoundException("Project not found")
 
         if data.assigned_to is not None:
             if not self.user_repo.get_by_id(db, data.assigned_to):
@@ -74,12 +78,10 @@ class TaskService:
         task = self.repo.get_by_id(db, task_id)
 
         if not task:
-            return None
+            raise TaskNotFoundException("Task not found by this id")
 
         if task.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this task"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         if data.assigned_to is not None:
             if not self.user_repo.get_by_id(db, data.assigned_to):
@@ -103,12 +105,10 @@ class TaskService:
         task = self.repo.get_by_id(db, task_id)
 
         if not task:
-            return None
+            raise TaskNotFoundException("Task not found by this id")
 
         if task.created_by != user_id:
-            raise HTTPException(
-                status_code=403, detail="Not authorized to access this task"
-            )
+            raise PermissionDeniedException("Permission Denied!")
 
         self.repo.delete(db, task)
         return True
