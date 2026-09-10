@@ -69,6 +69,24 @@ class TestAssignPermissionEndpoint:
         assert resp.status_code == 200
         assert resp.json()["success"] is True
 
+    def test_assign_permission_duplicate_idempotent(
+        self, client, auth_headers, seed_db
+    ):
+        resp1 = client.post(
+            "/admin/rbac/roles/operator/permissions",
+            params={"permission_name": "customer.read"},
+            headers=auth_headers,
+        )
+        assert resp1.status_code == 200
+
+        resp2 = client.post(
+            "/admin/rbac/roles/operator/permissions",
+            params={"permission_name": "customer.read"},
+            headers=auth_headers,
+        )
+        assert resp2.status_code == 200
+        assert resp2.json()["success"] is True
+
     def test_assign_permission_nonexistent_role(self, client, auth_headers, seed_db):
         resp = client.post(
             "/admin/rbac/roles/nonexistent/permissions",

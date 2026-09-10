@@ -65,6 +65,15 @@ class RBACService:
                 f"Permission '{permission_name}' does not exist"
             )
 
+        exists = self.repo.role_has_permission(db, role.id, permission.id)
+
+        if exists:
+            logger.info(
+                f"Role already has permission: "
+                f"role={role_name}, permission={permission_name}"
+            )
+            return exists
+
         logger.info(f"Fetched role: {role_name}, permission: {permission_name}")
         result = self.repo.assign_permission_to_role(db, role.id, permission.id)
 

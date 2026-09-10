@@ -43,6 +43,13 @@ class RBACRepository:
         )
         return db.execute(stmt).scalar_one_or_none()
 
+    def role_has_permission(self, db, role_id, permission_id):
+        stmt = select(RolePermissionDB).where(
+            RolePermissionDB.role_id == role_id,
+            RolePermissionDB.permission_id == permission_id,
+        )
+        return db.execute(stmt).scalar_one_or_none()
+
     def assign_permission_to_role(self, db, role_id, permission_id):
         obj = RolePermissionDB(role_id=role_id, permission_id=permission_id)
         db.add(obj)

@@ -38,14 +38,13 @@
 
 ### `assign_permission_to_role` is not idempotent
 
-- Status: Open
+- Status: Resolved
 - Found by: Pytest
 - Location: `app/modules/rbac/repository.py:46-51`
 - Symptom: Assigning the same permission to a role more than once causes a `UNIQUE constraint failed` error and results in HTTP 500.
 - Cause: `assign_permission_to_role` inserts without checking for existing records. `assign_role` handles duplicates safely, but `assign_permission` does not.
-- Test: Discovered while setting up Projects test fixtures (`tests/projects/test_projects.py`).
-- Current workaround: Ensure permissions are only granted once per role in test fixtures.
-- Planned fix: Add a duplicate check in `RBACService.assign_permission` or `RBACRepository.assign_permission_to_role`, consistent with how `assign_role` handles idempotency.
+- Test: `tests/rbac/test_rbac.py::TestAssignPermissionEndpoint::test_assign_permission_duplicate_idempotent`
+- Resolution: Added `role_has_permission` check in `RBACRepository` and idempotency guard in `RBACService.assign_permission`, mirroring the existing `assign_role` / `user_has_role` pattern. Duplicate assignment now returns the existing record with HTTP 200.
 
 ## Tasks
 
