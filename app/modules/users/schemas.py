@@ -40,13 +40,6 @@ class UserLogin(BaseModel):
         return validate_text(v, "username")
 
 
-# token response model
-class TokenResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str = "bearer"
-
-
 #   Validator function
 def validate_text(v: str, field_name: str):
     if re.search(r"[<>{}]", v):

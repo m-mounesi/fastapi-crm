@@ -24,7 +24,7 @@ from app.modules.customers.service import CustomerService
 from app.modules.projects.service import ProjectService
 from app.modules.rbac.service import RBACService
 from app.modules.tasks.service import TaskService
-from app.modules.users.service import AuthService
+from app.modules.auth.service import AuthService
 from app.modules.notes.service import NoteService
 
 
