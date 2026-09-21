@@ -36,3 +36,7 @@ Example permissions:
 
      + Pytest  
  integration test
+
+     + PostgreSQL 
+ changing DB to PostgreSQL 
+ 
