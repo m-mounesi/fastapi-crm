@@ -2,14 +2,18 @@ from sqlalchemy.orm import DeclarativeBase
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from core.config import settings
 
-sqlite_file_name = "database.db"
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{sqlite_file_name}"
+# Use configured database URL (defaults to SQLite for local development)
+SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
+
+# SQLite requires check_same_thread=False; other databases do not
+connect_args = {}
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
 
 # Connect to the DB
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
 
 # Operation Session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -22,10 +22,19 @@ class TestCreateNote:
         )
         assert response.status_code == 422
 
-    def test_create_note_with_customer_id(self, client, auth_headers, db_session):
+    def test_create_note_with_customer_id(
+        self, client, create_user, assign_role, seed_db, db_session
+    ):
         from app.modules.customers.models import CustomerDB
+        from security.jwt import create_access_token
 
-        customer = CustomerDB(name="Test Customer", created_by=1)
+        user, _ = create_user("note_customer_user")
+        assign_role(user.user_id, "admin")
+        headers = {
+            "Authorization": f"Bearer {create_access_token({'sub': user.username, 'user_id': user.user_id, 'type': 'access'})}"
+        }
+
+        customer = CustomerDB(name="Test Customer", created_by=user.user_id)
         db_session.add(customer)
         db_session.commit()
         db_session.refresh(customer)
@@ -36,23 +45,34 @@ class TestCreateNote:
                 "content": "Note with customer",
                 "customer_id": customer.id,
             },
-            headers=auth_headers,
+            headers=headers,
         )
         assert response.status_code == 201
         data = response.json()
         assert data["content"] == "Note with customer"
         assert data["customer_id"] == customer.id
 
-    def test_create_note_with_project_id(self, client, auth_headers, db_session):
+    def test_create_note_with_project_id(
+        self, client, create_user, assign_role, seed_db, db_session
+    ):
         from app.modules.projects.models import ProjectDB
         from app.modules.customers.models import CustomerDB
+        from security.jwt import create_access_token
 
-        customer = CustomerDB(name="Test Customer", created_by=1)
+        user, _ = create_user("note_project_user")
+        assign_role(user.user_id, "admin")
+        headers = {
+            "Authorization": f"Bearer {create_access_token({'sub': user.username, 'user_id': user.user_id, 'type': 'access'})}"
+        }
+
+        customer = CustomerDB(name="Test Customer", created_by=user.user_id)
         db_session.add(customer)
         db_session.commit()
         db_session.refresh(customer)
 
-        project = ProjectDB(title="Test Project", customer_id=customer.id, created_by=1)
+        project = ProjectDB(
+            title="Test Project", customer_id=customer.id, created_by=user.user_id
+        )
         db_session.add(project)
         db_session.commit()
         db_session.refresh(project)
@@ -63,7 +83,7 @@ class TestCreateNote:
                 "content": "Note with project",
                 "project_id": project.id,
             },
-            headers=auth_headers,
+            headers=headers,
         )
         assert response.status_code == 201
         data = response.json()

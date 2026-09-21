@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     ADMIN_USERNAME: str = Field(min_length=1)
     ADMIN_PASSWORD: str = Field(min_length=8)
     CORS_ORIGINS: str = Field(default="http://localhost:3000")
+    DATABASE_URL: str = "sqlite:///./database.db"
 
     model_config = SettingsConfigDict(
         env_file=".env",

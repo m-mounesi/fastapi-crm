@@ -15,9 +15,14 @@ from seeders.rbac_seed import seed_roles, seed_permissions, assign_admin_permiss
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
+# SQLite requires check_same_thread=False; other databases do not
+connect_args = {}
+if TEST_DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+
 test_engine = create_engine(
     TEST_DATABASE_URL,
-    connect_args={"check_same_thread": False},
+    connect_args=connect_args,
     poolclass=StaticPool,
 )
 

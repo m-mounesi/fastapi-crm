@@ -30,7 +30,7 @@ def upgrade() -> None:
         sa.Column(
             "updated_at",
             sa.DateTime(timezone=True),
-            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            server_default=sa.func.now(),
             nullable=False,
         ),
     )
@@ -39,7 +39,7 @@ def upgrade() -> None:
         sa.Column(
             "updated_at",
             sa.DateTime(timezone=True),
-            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            server_default=sa.func.now(),
             nullable=True,
         ),
     )
@@ -51,7 +51,7 @@ def upgrade() -> None:
         sa.Column(
             "updated_at",
             sa.DateTime(timezone=True),
-            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            server_default=sa.func.now(),
             nullable=False,
         ),
     )
@@ -69,7 +69,7 @@ def upgrade() -> None:
         sa.Column(
             "updated_at",
             sa.DateTime(timezone=True),
-            server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            server_default=sa.func.now(),
             nullable=False,
         ),
     )
@@ -89,7 +89,7 @@ def upgrade() -> None:
             "updated_at",
             existing_type=sa.DATETIME(),
             nullable=False,
-            existing_server_default=sa.text("(CURRENT_TIMESTAMP)"),
+            existing_server_default=sa.func.now(),
         )
     # ### end Alembic commands ###
 
@@ -102,7 +102,7 @@ def downgrade() -> None:
         "updated_at",
         existing_type=sa.DATETIME(),
         nullable=True,
-        existing_server_default=sa.text("(CURRENT_TIMESTAMP)"),
+        existing_server_default=sa.func.now(),
     )
     op.drop_column("users", "deleted_at")
     op.drop_index(op.f("ix_tasks_project_id"), table_name="tasks")
