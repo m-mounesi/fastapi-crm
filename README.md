@@ -38,5 +38,7 @@ Example permissions:
  integration test
 
      + PostgreSQL 
- changing DB to PostgreSQL 
+ changing DB to PostgreSQL
+
+ Docker 
  
