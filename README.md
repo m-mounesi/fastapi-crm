@@ -41,4 +41,5 @@ Example permissions:
  changing DB to PostgreSQL
 
  Docker 
+vue
  
